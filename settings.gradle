@@ -8,3 +8,9 @@
  */
 
 rootProject.name = 'ccrtv'
+
+// sourceControl {
+//     gitRepository("https://github.com/aherranz/cclib.git") {
+//         producesModule("es.upm.babel:cclib")
+//     }
+// }
