@@ -18,7 +18,7 @@ package es.upm.babel.ccrtv;
  * the invariants.
  */
 
-import es.upm.babel.cclib.MSemaphore;
+import es.upm.babel.ccrtv.MSemaphore;
 
 public class SSemaphore {
     private static MSemaphore msemaphore;

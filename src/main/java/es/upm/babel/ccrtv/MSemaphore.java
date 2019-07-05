@@ -19,6 +19,7 @@ import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 // TESTING: Used to provoke invariant violations
 
+import es.upm.babel.cclib.Semaphore;
 import es.upm.babel.cclib.Monitor;
 import es.upm.babel.cclib.Monitor.Cond;
 
