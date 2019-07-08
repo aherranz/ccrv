@@ -53,22 +53,6 @@ public class RW
                   iValue=sharedResource; // get the element read
 		  ConcIO.printfnl("Obtenido valor: %s",""+iValue);
 
-// Hay 1 anotaciones.
-// @es.upm.babel.ccrtv.CountersAnnot(semOperationLabels=[mutexWaitR, mutexSignalR, mutexWaitR2, mutexSignalR2, roomEmptyWaitR, roomEmptySignalR])
-// Valor 0: mutexWaitR
-// Valor 1: mutexSignalR
-// Valor 2: mutexWaitR2
-// Valor 3: mutexSignalR2
-// Valor 4: roomEmptyWaitR
-// Valor 5: roomEmptySignalR
-// Clase=interface es.upm.babel.ccrtv.CountersAnnot
-// Método 0: semOperationLabels default null
-// Método 1: equals default null
-// Método 2: toString default null
-// Método 3: hashCode default null
-// Método 4: annotationType default null
-		  // --------------------------------------
-
 		  semMutex.await("mutexWaitR2");
                   readers-=1;
 		  if (readers==0) {semRoomEmpty.signal("roomEmptySignalR");}
