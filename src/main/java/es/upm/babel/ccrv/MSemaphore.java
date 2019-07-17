@@ -21,8 +21,6 @@ import es.upm.babel.cclib.Semaphore;
 import es.upm.babel.cclib.Monitor;
 import es.upm.babel.cclib.Monitor.Cond;
 
-import java.util.function.Function;
-
 class MSemaphore {
 
   public static final int PRE=0;

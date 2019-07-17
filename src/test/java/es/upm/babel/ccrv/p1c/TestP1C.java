@@ -1,7 +1,6 @@
 package es.upm.babel.ccrv.p1c;
 
 import es.upm.babel.ccrv.Semaphore;
-import es.upm.babel.ccrv.Invariant;
 
 public class TestP1C
 {

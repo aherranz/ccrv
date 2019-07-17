@@ -18,8 +18,6 @@ package es.upm.babel.ccrv;
  * the invariants.
  */
 
-import java.util.function.Function;
-
 public class Semaphore {
   private static MSemaphore msemaphore;
   // The underlying monitor-embedded semaphores

@@ -7,7 +7,6 @@ package es.upm.babel.ccrv.rw;
 // import java.util.concurrent.ThreadLocalRandom;
 
 import es.upm.babel.ccrv.Semaphore;
-import es.upm.babel.ccrv.Invariant;
 
 public class TestRW
 {

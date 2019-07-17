@@ -1,7 +1,6 @@
 package es.upm.babel.ccrv.multiplex;
 
 import es.upm.babel.ccrv.Semaphore;
-import es.upm.babel.ccrv.Invariant;
 
 public class TestMultiplex {
 
