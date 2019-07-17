@@ -113,11 +113,9 @@ public class Semaphore {
   } // after
 
   public static String displayCounters() {
-    String sOutput=MSemaphore.displayCounters();
-
-    return sOutput;
-  } // displayCounters
-
+    return MSemaphore.displayCounters();
+  }
+  
     // Returns the current counter of a semaphore named by the programmer
     // public static int getValue(String sName) {
     // 	return MSemaphore.getValue(sName);
