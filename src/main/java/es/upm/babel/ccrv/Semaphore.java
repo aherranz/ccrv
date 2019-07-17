@@ -24,9 +24,6 @@ public class Semaphore {
   private String name;
   // The name of the semaphore (either machine-generated or programmer-given)
 
-  public static final int PRE=MSemaphore.PRE;
-  public static final int POST=MSemaphore.POST;
-
   // Constructor/1: This is the 'usual' constructor, which only receives
   // the initial value for the semaphore, thus enabling the programmer to
   // use SSemaphores as traditional semaphores. The only prolem is that,

@@ -66,7 +66,6 @@ public class RW
   public class Writer extends Thread {
     public void run() {
       int i;
-      int iValue;
 
       for(i=0;i<10;i++) { // 10 iterations per Writer
         try {

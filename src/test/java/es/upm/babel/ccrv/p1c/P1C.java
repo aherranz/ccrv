@@ -8,7 +8,6 @@ import es.upm.babel.cclib.ConcIO;
 
 public class P1C
 {
-  private static final int BUFFER_CAPACITY=3;
   private static Integer buffer;
   private static Semaphore sem, semCounterCons,semCounterProd;
 
