@@ -1,6 +1,6 @@
-# es.upm.babel.ccrtv
+# es.upm.babel.ccrv
 
-ccrtv is a Java Library for Runtime Verification of Concurrent Programs.
+ccrv is a Java Library for Runtime Verification of Concurrent Programs.
 
 ## Building the Library
 
