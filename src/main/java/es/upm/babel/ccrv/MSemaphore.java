@@ -254,21 +254,20 @@ class MSemaphore {
         msemAux.setValue(msemAux.getValue()-1);
         // Decrement the semaphore's counter. This value can drop
         // below 0.
-        if (msemAux.getValue()>=0) // The semaphore has credit
-          {} // Nothing is done (in this case, the invariant is checked
-        // after the post counter is incremented since both
-        // counters are incremented atomically
-        else // The semaphore does not have any credit
-          {
-            if (!MSemaphore.check()) {
-              throw new IllegalStateException("Invariant violation");
-            }
-            msemAux.getQueue().await();
-            // Send the thread to sleep. This makes the thread
-            // leave the monitor (no need for leave and enter)
-            // MSemaphore.monitor.leave();
-            // MSemaphore.monitor.enter();
-          } // msemAux.getValue()<0
+
+        // If the semaphore has credit nothing is done (in this case,
+        // the invariant is checked after the post counter is
+        // incremented since both counters are incremented atomically
+        if (msemAux.getValue() < 0) { // The semaphore does not have any credit
+          if (!MSemaphore.check()) {
+            throw new IllegalStateException("Invariant violation");
+          }
+          msemAux.getQueue().await();
+          // Send the thread to sleep. This makes the thread
+          // leave the monitor (no need for leave and enter)
+          // MSemaphore.monitor.leave();
+          // MSemaphore.monitor.enter();
+        }
         if (bLocked) {bLocked=false; lockSem.signal();}
         // If updates to counters were forbidden and a thread awakes,
         // updates to counters are reallowed.
@@ -314,24 +313,21 @@ class MSemaphore {
         incCounter(name,counterName,"Signal",nLineNumber,POST);
         // Increment the counter of the semaphore
         msemAux.setValue(msemAux.getValue()+1);
-        if (msemAux.getValue()>0) // The semaphore has credit
-          {}
-        else // The semaphore does not have any credit
-          {
-            // No more counter updates are allowed until a
-            // post-await counter is incremented
-            msemAux.getQueue().signal(); // Signal one waiting thread
-            bLocked=true; // The table of counters is locked until the
-            // awaken thread increments the post-counter
-            // after the await
-            MSemaphore.monitor.leave();
-            // Prepare to sleep until a post-await counter is
-            // incremented (the monitor cannot be left busy).
-            lockSem.await(); // Wait until a post-await counter is
-            // incremented.
-            MSemaphore.monitor.enter();
-            // Regain ownership of the monitor
-          }
+        if (msemAux.getValue() <= 0) { // The semaphore does not have any credit
+          // No more counter updates are allowed until a
+          // post-await counter is incremented
+          msemAux.getQueue().signal(); // Signal one waiting thread
+          bLocked=true; // The table of counters is locked until the
+          // awaken thread increments the post-counter
+          // after the await
+          MSemaphore.monitor.leave();
+          // Prepare to sleep until a post-await counter is
+          // incremented (the monitor cannot be left busy).
+          lockSem.await(); // Wait until a post-await counter is
+          // incremented.
+          MSemaphore.monitor.enter();
+          // Regain ownership of the monitor
+        }
         // incCounter(nLineNumber,POST);
         if (!MSemaphore.check()) {
           throw new IllegalStateException("Invariant violation");
