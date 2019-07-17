@@ -24,9 +24,19 @@ public class TestRW
 	Invariant oInv=new InvariantForRW();
         // We create the invariant we want to enforce in this scenario
 
-        SSemaphore.setInvariant(oInv);
+        // SSemaphore.setInvariant(oInv);
 	// ... and pass the invariant to SSemaphore, so from now on, every call
 	// an SSemaphore (await/signal) checks whether the invariant holds.
+
+
+	SSemaphore.addInvariant((a) ->
+	     {
+		 return ((SSemaphore.after("roomEmptyWaitW")-SSemaphore.after("roomEmptySignalW")==1 &&
+			  (SSemaphore.after("mutexSignalR")-SSemaphore.before("mutexWaitR2"))==0) ||
+		         (SSemaphore.after("roomEmptyWaitW")-SSemaphore.after("roomEmptySignalW"))==0);
+
+	     }
+	);
 
 	r.start(); // Start the reader
 	w.start(); // Start the writer
@@ -165,3 +175,15 @@ public class TestRW
     // 16:	[9] -> Invariant OK: {cmutexSignalR__m=1, cmutexSignalR__p=1, cmutexWaitR__m=1, cmutexWaitR__p=1, croomEmptySignalW__m=1, croomEmptySignalW__p=1, croomEmptyWaitR__m=1, croomEmptyWaitR__p=1, croomEmptyWaitW__m=1, croomEmptyWaitW__p=1} roomEmpty=1 mutex=1
     // 16:	[9] -> Obtenido valor: 1
     // 17:		[11] -> >>>>> Illegal system state: cREWaitW+=2, cRESignalW=1, cMSignalR+=1,cMWaitR2=0{cmutexSignalR__m=1, cmutexSignalR__p=1, cmutexWaitR__m=1, cmutexWaitR__p=1, croomEmptySignalW__m=1, croomEmptySignalW__p=1, croomEmptyWaitR__m=1, croomEmptyWaitR__p=1, croomEmptyWaitW__m=2, croomEmptyWaitW__p=2} roomEmpty=0 mutex=1
+
+// -----------------------------------------------------
+
+// jose@tantor8:~/docto/cclib/cclib$ java RW.TestRW
+//      0:	[11] -> Escrito valor: 1
+//    121:		[9] -> ERROR EN READER: Illegal system state {
+// "counters" : {cREADERSUP+ : 1, cmutexSignalR+ : 1, cmutexSignalR- : 1, cmutexWaitR+ : 1, cmutexWaitR- : 1, croomEmptyWaitR+ : 1, croomEmptyWaitR- : 1, croomEmptyWaitW+ : 1, croomEmptyWaitW- : 1}
+// "semaphores" : {roomEmpty : 0, mutex : 1}
+// }
+//    122:	[11] -> ERROR EN WRITER: Illegal system state {
+// "counters" : {cREADERSUP+ : 1, cmutexSignalR+ : 1, cmutexSignalR- : 1, cmutexWaitR+ : 1, cmutexWaitR- : 1, croomEmptySignalW+ : 1, croomEmptySignalW- : 1, croomEmptyWaitR+ : 1, croomEmptyWaitR- : 1, croomEmptyWaitW+ : 2, croomEmptyWaitW- : 2}
+//  "semaphores" : {roomEmpty : 0, mutex : 1}

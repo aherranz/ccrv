@@ -21,6 +21,8 @@ import es.upm.babel.cclib.Semaphore;
 import es.upm.babel.cclib.Monitor;
 import es.upm.babel.cclib.Monitor.Cond;
 
+import java.util.function.Function;
+
 public class MSemaphore {
 
     public static final int PRE=0;
@@ -82,6 +84,12 @@ public class MSemaphore {
     // MSemaphore. If this attribute is null hwn one such operation finishes,
     // no check is performed.
 
+    private static Function<Void,Boolean> fInvariant;
+    // A function that takes no argument and returns a Boolean. If it is
+    // defined, rhe semaphore primitives (await, signal) will call it
+    // instead of calling oInvariant.check(). If this function is called
+    // and it returns false, the semaphore primitive will throw an exception
+
     static{
 	// Initializing the system of MSemaphores:
 	monitor=new Monitor(); // The monitor that encloses all the MSemaphores
@@ -97,8 +105,32 @@ public class MSemaphore {
     // Given a line number and a value for pre or post, returns the name
     // of he corresponding counter (cNNm, cNNp):
     private static String getCounterName(String sCounterName,int nPrePost) {
-	return "c"+sCounterName+"__"+(nPrePost==MSemaphore.PRE?"m":"p"); // mINUS or pLUS
+	return "c"+sCounterName+""+(nPrePost==MSemaphore.PRE?"-":"+");
     } // getCounterName
+
+    // Check the invariant defined: If the invariant has been defined as a
+    // boolean function, it is evaluated first. A exception is thrown if this
+    // evaluation returns false.
+    // If no boolean function is defined as invariant, then the object
+    // oInvariant (which must implement Invariant is tried by
+    // calling the method of such an object.
+    private static void check() throws IllegalArgumentException
+    {
+	Boolean bResultFInvariant;
+	String sError;
+
+	if (fInvariant!=null) { // Boolean function defined
+	    bResultFInvariant=fInvariant.apply(null);
+	    if (!bResultFInvariant) {
+              sError="Illegal system state "+MSemaphore.displayCounters();
+	      throw new IllegalArgumentException(sError);
+	    } // if !bResultFInvariant
+	} else { // fInvariant is null
+	    if (oInvariant!=null) {
+		oInvariant.check();
+	    } // if oInvariant!=null
+	} // else: fInvariant==null
+    } // check
 
     // Adding a new semaphore to the table of known semaphores. The following
     // values are needed:
@@ -118,6 +150,12 @@ public class MSemaphore {
     public static void setInvariant(Invariant inv) {
         oInvariant=inv;
     } // setInvariant
+
+    // Sets the boolean function that will be checked right after
+    // any operation on any known MSemaphore
+    public static void addInvariant(Function<Void,Boolean> fInv) {
+        fInvariant=fInv;
+    } // addInvariant
 
     // The 4-th element of the stack is taken because when SSemaphore.await
     // (or signal) is called, the stack contains:
@@ -198,7 +236,7 @@ public class MSemaphore {
 
     // Like getCounter but returns 0 (without exception) if the counter does
     // not exist
-    public static int getCounterSafe(String sName, int nPrePost) throws ArrayIndexOutOfBoundsException {
+    private static int getCounterSafe(String sName, int nPrePost) throws ArrayIndexOutOfBoundsException {
 	Integer oInt;
 
 	lockSem.await();
@@ -206,6 +244,19 @@ public class MSemaphore {
 	lockSem.signal();
 	return (oInt==null)?0:oInt.intValue();
     } // getCounterSafe
+
+    // New interface: 'before' and 'after' repalace 'getCounter'
+    // Both functions return 0 if the counter whose name is passed as argument
+    // does not exist (i.e. they do not throw exceptions)
+    // before: return the value of the PRECOUNTER by that name
+    public static int before(String sName) {
+	return getCounterSafe(sName,MSemaphore.PRE);
+    } // before
+
+    // after: return the value of the POSTCOUNTER by that name
+    public static int after(String sName) {
+	return getCounterSafe(sName,MSemaphore.POST);
+    } // after
 
     // Given a semaphore name, perform a P operation on it
     // The second argument (which can be empty) are used to give a name
@@ -237,7 +288,7 @@ public class MSemaphore {
 	             // counters are incremented atomically
 	      else // The semaphore does not have any credit
 		  {
-		      if (oInvariant!=null) {oInvariant.check();}
+		      MSemaphore.check();
 		      // Check the invariant, if it is defined
 		      msemAux.getQueue().await();
 		      // Send the thread to sleep. This makes the thread
@@ -255,7 +306,7 @@ public class MSemaphore {
 	      // the table of counters.
               incCounter(name,counterName,"Await",nLineNumber,POST);
 	      // Increment the counter after the await
-      	      if (oInvariant!=null) {oInvariant.check();}
+      	      MSemaphore.check();
 	      // And check the invariant, if one is defined.
 	  } // if msemAux!=null
 	} catch (Exception e) {
@@ -308,7 +359,7 @@ public class MSemaphore {
 		      // Regain ownership of the monitor
 		  }
               // incCounter(nLineNumber,POST);
-	      if (oInvariant!=null) {oInvariant.check();}
+	      MSemaphore.check();
 	      // Check the invariant, if one is defined.
 	  } // if msemAux!=null
 	} catch (Exception e) {
@@ -328,7 +379,7 @@ public class MSemaphore {
     public static String displayCounters() {
 	String sOutput="{";
 	int nNumCounters;
-	int i;
+	int i, nCountNamedSemaphores;
 	Set<String> sKeys;
         ArrayList<String> lKeys=new ArrayList<String>();
 
@@ -338,33 +389,51 @@ public class MSemaphore {
 	for(String s : sKeys) {lKeys.add(s);}
 	Collections.sort(lKeys);
 
+        sOutput+="\n";
+	sOutput+="\"counters\" : {";
+
 	nNumCounters=sKeys.size();
 	i=0;
 	for (String sCounter : lKeys) {
 	    sOutput+=sCounter;
-	    sOutput+="=";
+	    sOutput+=" : ";
 	    sOutput+=MSemaphore.htCounters.get(sCounter);
 	    i++;
 	    if (i<nNumCounters) {sOutput+=", ";}
 	} // foreach
 	sOutput+="}";
 
+        sOutput+="\n";
+	sOutput+="\"semaphores\" : {";
+
         // We now dump named semaphores:
+	nCountNamedSemaphores=0;
 	sKeys=MSemaphore.htMSems.keySet();
 	for (String sSemaphoreName : sKeys) {
 	    if (!htMSems.get(sSemaphoreName).bMachineNamed) {
-		sOutput+=" ";
-		sOutput+=sSemaphoreName+"="+htMSems.get(sSemaphoreName).getValue();
+		if (nCountNamedSemaphores>0) {sOutput+=", ";}
+		sOutput+=sSemaphoreName+" : "+htMSems.get(sSemaphoreName).getValue();
+		nCountNamedSemaphores++;
 	    } // if semaphore not named by machine
 	} // for
+        sOutput+="}\n";
+
+	sOutput+="}";
+
 
 	return sOutput;
     } // displayCounters
 
     // Returns the current counter of a semaphore named by the programmer
-    public static int getValue(String sName) {
-	return htMSems.get(sName).getValue();
-  } // getValue
+    // public static int getValue(String sName) {
+    // 	return htMSems.get(sName).getValue();
+    // } // getValue
+
+    // Returns the current counter of a semaphore named by the programmer
+    public static int semaphore(String sName) {
+    	return htMSems.get(sName).getValue();
+    } // getValue
+
 
     // Used to provoke invariant violations
     private static int randomNumber(int min,int max)

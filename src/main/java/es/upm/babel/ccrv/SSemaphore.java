@@ -8,7 +8,7 @@ package es.upm.babel.ccrv;
  * - A signal increments both its pre- and post-counters at the same time
  * - The post-counter of a signal is incremented atomically (i.e. with no
  *   interleaved increment of any other counter) of the post-await counter
- *   of the aaken thread (if any).
+ *   of the awaken thread (if any).
  * In addition, this class wraps MSemaphore, so the original interface of
  * semaphores is recovered (i.e. semaphore.await() instead of the static
  * invocation used in MSemaphores: MSemaphore.await("<msemaphore name>")).
@@ -17,6 +17,8 @@ package es.upm.babel.ccrv;
  * internal counter of those named semaphores can be referenced from inside
  * the invariants.
  */
+
+import java.util.function.Function;
 
 public class SSemaphore {
     private static MSemaphore msemaphore;
@@ -92,9 +94,26 @@ public class SSemaphore {
 	MSemaphore.setInvariant(oInv);
     } // setInvariant
 
-    public static int getCounterSafe(String sCounterName,int nPrePost) {
-	return MSemaphore.getCounterSafe(sCounterName,nPrePost);
-    } // getCounterSafe
+    // Add an invariant that will be checked before and after every semaphore
+    // operation
+    public static void addInvariant(Function<Void,Boolean> fInv) {
+	MSemaphore.addInvariant(fInv);
+    } // addInvariant
+
+
+    // public static int getCounterSafe(String sCounterName,int nPrePost) {
+    // 	 return MSemaphore.getCounterSafe(sCounterName,nPrePost);
+    // } // getCounterSafe
+
+    // Return the value of the PREcounter with the given name
+    public static int before(String sCounterName) {
+	return MSemaphore.before(sCounterName);
+    } // before
+
+    // Return the value of the POSTcounter with the given name
+    public static int after(String sCounterName) {
+	return MSemaphore.after(sCounterName);
+    } // after
 
     public static String displayCounters() {
 	String sOutput=MSemaphore.displayCounters();
@@ -103,9 +122,20 @@ public class SSemaphore {
     } // displayCounters
 
     // Returns the current counter of a semaphore named by the programmer
-    public static int getValue(String sName) {
-	return MSemaphore.getValue(sName);
+    // public static int getValue(String sName) {
+    // 	return MSemaphore.getValue(sName);
+    // } // getValue
+
+    // Returns the current counter of a semaphore named by the programmer
+    // public static int getValue(String sName) {
+    // 	return MSemaphore.getValue(sName);
+    // } // getValue
+
+    // Returns the current counter of a semaphore named by the programmer
+    public static int semaphore(String sName) {
+    	return MSemaphore.semaphore(sName);
     } // getValue
+
 
     // Increments the counter whose name is given (POST side). If the counter
     // does not exist, it is created with value 1.

@@ -29,20 +29,20 @@ public class InvariantForRW implements Invariant {
 	String sError;
 
         if (counters==null) {throw new IllegalArgumentException("No counters have been defined");}
-	cRoomEmptyWaitW=SSemaphore.getCounterSafe("roomEmptyWaitW",SSemaphore.POST);
-	cRoomEmptySignalW=SSemaphore.getCounterSafe("roomEmptySignalW",SSemaphore.POST);
-	cMutexSignalR=SSemaphore.getCounterSafe("mutexSignalR",SSemaphore.POST);
-	cMutexWaitR2=SSemaphore.getCounterSafe("mutexWaitR2",SSemaphore.PRE);
+	cRoomEmptyWaitW=SSemaphore.after("roomEmptyWaitW");
+	cRoomEmptySignalW=SSemaphore.after("roomEmptySignalW");
+	cMutexSignalR=SSemaphore.after("mutexSignalR");
+	cMutexWaitR2=SSemaphore.before("mutexWaitR2");
 
 	bConjunct11=(cRoomEmptyWaitW-cRoomEmptySignalW)==1;
 	bConjunct12=(cMutexSignalR-cMutexWaitR2)==0;
 	bDisjunct2=(cRoomEmptyWaitW-cRoomEmptySignalW)==0;
 
 	if (!((bConjunct11 && bConjunct12) || bDisjunct2))
-	    {sError=">>>>> Illegal system state: cREWaitW+="+cRoomEmptyWaitW+", cRESignalW="+cRoomEmptySignalW+", cMSignalR+="+cMutexSignalR+",cMWaitR2="+cMutexWaitR2+SSemaphore.displayCounters();
+	    {sError="Illegal system state "+SSemaphore.displayCounters();
 	ConcIO.printfnl(sError);
 	throw new IllegalArgumentException(sError);}
-	else {ConcIO.printfnl("Invariant OK: %s %s %s",SSemaphore.displayCounters(),"mutex="+SSemaphore.getValue("1"),"roomEmpty="+SSemaphore.getValue("2"));}
+	else {ConcIO.printfnl("Invariant OK %s",SSemaphore.displayCounters());}
     } // check
 
     public void setCounters(Hashtable ht) {this.counters=ht;}
