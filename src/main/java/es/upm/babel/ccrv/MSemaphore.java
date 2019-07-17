@@ -181,7 +181,7 @@ class MSemaphore {
       // If it is the first time this counter is used, a value of 1
       // is assigned to it
       else // The counter already exists
-        {htCounters.put(sCounterNameAux,iAuxValue.intValue()+1);}
+        {htCounters.put(sCounterNameAux, iAuxValue +1);}
     } catch (Exception ex) {
       throw ex;
     } finally {
@@ -202,7 +202,7 @@ class MSemaphore {
     if (oInt==null) {
       throw new ArrayIndexOutOfBoundsException("Counter named "+sName+" and position "+(nPrePost>0?"POST":"PRE")+" does not exist ("+htCounters.toString()+")");
     } else {
-      return oInt.intValue();
+      return oInt;
     }
   } // getCounter
 
@@ -214,7 +214,7 @@ class MSemaphore {
     lockSem.await();
     oInt=htCounters.get(MSemaphore.getCounterName(sName,nPrePost));
     lockSem.signal();
-    return (oInt==null)?0:oInt.intValue();
+    return (oInt==null)?0: oInt;
   } // getCounterSafe
 
     // New interface: 'before' and 'after' repalace 'getCounter'

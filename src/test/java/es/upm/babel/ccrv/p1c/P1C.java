@@ -60,7 +60,7 @@ public class P1C
             // Generate new element
             Thread.sleep(ThreadLocalRandom.current().nextInt(0,2001));
             ConcIO.printfnl("Generado elemento: %s",""+i*11);
-            buffer=new Integer(i*11); semCounterProd.signal();
+            buffer= i * 11; semCounterProd.signal();
             i++;
           } // if buffer is empty...
           sem.signal();
