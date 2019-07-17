@@ -1,4 +1,4 @@
-package es.upm.babel.ccrtv;
+package es.upm.babel.ccrv;
 
 /*
  * This the class of Serialized Semaphores (SSemaphores). By performing all
@@ -17,8 +17,6 @@ package es.upm.babel.ccrtv;
  * internal counter of those named semaphores can be referenced from inside
  * the invariants.
  */
-
-import es.upm.babel.ccrtv.MSemaphore;
 
 public class SSemaphore {
     private static MSemaphore msemaphore;

@@ -1,4 +1,4 @@
-package es.upm.babel.ccrtv;
+package es.upm.babel.ccrv;
 
 import java.util.Hashtable;
 

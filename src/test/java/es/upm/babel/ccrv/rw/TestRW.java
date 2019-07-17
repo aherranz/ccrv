@@ -1,4 +1,4 @@
-package es.upm.babel.ccrtv.rw;
+package es.upm.babel.ccrv.rw;
 
 /*
  * Test the scenario of readers and writers
@@ -6,8 +6,8 @@ package es.upm.babel.ccrtv.rw;
 
 // import java.util.concurrent.ThreadLocalRandom;
 
-import es.upm.babel.ccrtv.SSemaphore;
-import es.upm.babel.ccrtv.Invariant;
+import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Invariant;
 
 public class TestRW
 {

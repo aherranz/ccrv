@@ -1,11 +1,10 @@
-package es.upm.babel.ccrtv.p1c;
+package es.upm.babel.ccrv.p1c;
 
-import es.upm.babel.ccrtv.Invariant;
-import es.upm.babel.ccrtv.SSemaphore;
+import es.upm.babel.ccrv.Invariant;
+import es.upm.babel.ccrv.SSemaphore;
 import es.upm.babel.cclib.ConcIO;
 
 import java.util.Hashtable;
-import java.util.Enumeration;
 
 public class InvariantForP1C implements Invariant {
     private Hashtable counters;

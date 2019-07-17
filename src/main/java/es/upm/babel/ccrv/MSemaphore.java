@@ -1,4 +1,4 @@
-package es.upm.babel.ccrtv;
+package es.upm.babel.ccrv;
 
 /*
  * MSemaphore represents a Monitor-embedded semaphore. All the operations on
@@ -10,12 +10,10 @@ package es.upm.babel.ccrtv;
  *   post-await counter are incremented atomically.
  */
 
-import java.util.concurrent.locks.Condition;
 import java.util.Hashtable;
 import java.util.Set;
 import java.util.ArrayList;
 import java.util.Collections; // sort
-import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 // TESTING: Used to provoke invariant violations
 

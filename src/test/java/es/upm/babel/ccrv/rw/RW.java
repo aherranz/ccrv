@@ -1,4 +1,4 @@
-package es.upm.babel.ccrtv.rw;
+package es.upm.babel.ccrv.rw;
 
 /*
  * Problem of the Readers and Writers. This class defines
@@ -6,10 +6,7 @@ package es.upm.babel.ccrtv.rw;
  * the semaphores required (mutex, items, spaces).
  */
 
-import java.util.concurrent.ThreadLocalRandom;
-
-import es.upm.babel.ccrtv.SSemaphore;
-import es.upm.babel.ccrtv.Invariant;
+import es.upm.babel.ccrv.SSemaphore;
 import es.upm.babel.cclib.ConcIO;
 
 public class RW

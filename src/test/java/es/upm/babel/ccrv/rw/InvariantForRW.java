@@ -1,11 +1,10 @@
-package es.upm.babel.ccrtv.rw;
+package es.upm.babel.ccrv.rw;
 
-import es.upm.babel.ccrtv.Invariant;
-import es.upm.babel.ccrtv.SSemaphore;
+import es.upm.babel.ccrv.Invariant;
+import es.upm.babel.ccrv.SSemaphore;
 import es.upm.babel.cclib.ConcIO;
 
 import java.util.Hashtable;
-import java.util.Enumeration;
 
 // Equivalences: (Article-->Java code)
 // c7 ==> roomEmptyWaitW

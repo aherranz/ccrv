@@ -1,11 +1,9 @@
-package es.upm.babel.ccrtv.p1c;
+package es.upm.babel.ccrv.p1c;
 
 
-import java.util.Vector;
 import java.util.concurrent.ThreadLocalRandom;
 
-import es.upm.babel.ccrtv.SSemaphore;
-import es.upm.babel.ccrtv.Invariant;
+import es.upm.babel.ccrv.SSemaphore;
 import es.upm.babel.cclib.ConcIO;
 
 public class P1C
