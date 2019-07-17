@@ -23,7 +23,7 @@ import es.upm.babel.cclib.Monitor.Cond;
 
 import java.util.function.Function;
 
-public class MSemaphore {
+class MSemaphore {
 
     public static final int PRE=0;
     public static final int POST=1;
