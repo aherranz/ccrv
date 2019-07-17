@@ -1,7 +1,7 @@
 package es.upm.babel.ccrv.rw;
 
 import es.upm.babel.ccrv.Invariant;
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.cclib.ConcIO;
 
 import java.util.Hashtable;
@@ -29,20 +29,20 @@ public class InvariantForRW implements Invariant {
 	String sError;
 
         if (counters==null) {throw new IllegalArgumentException("No counters have been defined");}
-	cRoomEmptyWaitW=SSemaphore.after("roomEmptyWaitW");
-	cRoomEmptySignalW=SSemaphore.after("roomEmptySignalW");
-	cMutexSignalR=SSemaphore.after("mutexSignalR");
-	cMutexWaitR2=SSemaphore.before("mutexWaitR2");
+	cRoomEmptyWaitW= Semaphore.after("roomEmptyWaitW");
+	cRoomEmptySignalW= Semaphore.after("roomEmptySignalW");
+	cMutexSignalR= Semaphore.after("mutexSignalR");
+	cMutexWaitR2= Semaphore.before("mutexWaitR2");
 
 	bConjunct11=(cRoomEmptyWaitW-cRoomEmptySignalW)==1;
 	bConjunct12=(cMutexSignalR-cMutexWaitR2)==0;
 	bDisjunct2=(cRoomEmptyWaitW-cRoomEmptySignalW)==0;
 
 	if (!((bConjunct11 && bConjunct12) || bDisjunct2))
-	    {sError="Illegal system state "+SSemaphore.displayCounters();
+	    {sError="Illegal system state "+ Semaphore.displayCounters();
 	ConcIO.printfnl(sError);
 	throw new IllegalArgumentException(sError);}
-	else {ConcIO.printfnl("Invariant OK %s",SSemaphore.displayCounters());}
+	else {ConcIO.printfnl("Invariant OK %s", Semaphore.displayCounters());}
     } // check
 
     public void setCounters(Hashtable ht) {this.counters=ht;}

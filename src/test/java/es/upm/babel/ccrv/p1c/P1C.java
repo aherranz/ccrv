@@ -3,20 +3,20 @@ package es.upm.babel.ccrv.p1c;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.cclib.ConcIO;
 
 public class P1C
 {
     private static final int BUFFER_CAPACITY=3;
     private static Integer buffer;
-    private static SSemaphore semMutex;
-    private static SSemaphore sem, semCounterCons,semCounterProd;
+    private static Semaphore semMutex;
+    private static Semaphore sem, semCounterCons,semCounterProd;
 
     static { // Everything is initialized
-        semMutex=new SSemaphore(1);
-	sem=new SSemaphore(1,"sem");
-	semCounterProd=new SSemaphore(0,"semCounterProd"); semCounterCons=new SSemaphore(0,"semCounterCons");
+        semMutex=new Semaphore(1);
+	sem=new Semaphore(1,"sem");
+	semCounterProd=new Semaphore(0,"semCounterProd"); semCounterCons=new Semaphore(0,"semCounterCons");
 	buffer=null;
     } // static code
 

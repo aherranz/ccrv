@@ -1,7 +1,7 @@
 package es.upm.babel.ccrv.multiplex;
 
 import es.upm.babel.ccrv.Invariant;
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 
 import es.upm.babel.cclib.ConcIO;
 
@@ -28,9 +28,9 @@ public class InvariantForMutex implements Invariant {
 	// given time since all the semaphores are operated from inside
 	// a monitor
         if (counters==null) {throw new IllegalArgumentException("No existen contadores");}
-	cInMinus=SSemaphore.before("mutexIn");
-	cInPlus=SSemaphore.after("mutexIn");
-	cOut=SSemaphore.after("mutexOut");
+	cInMinus= Semaphore.before("mutexIn");
+	cInPlus= Semaphore.after("mutexIn");
+	cOut= Semaphore.after("mutexOut");
 
 	nLeftSide=cInPlus-cOut;
 	nRightSide=(cInMinus-cOut<n)?cInMinus-cOut:n;
@@ -40,7 +40,7 @@ public class InvariantForMutex implements Invariant {
 	ConcIO.printfnl(sError);
 	throw new IllegalArgumentException(sError);}
 	else
-	    {ConcIO.printfnl("Invariant OK: %s",SSemaphore.displayCounters());}
+	    {ConcIO.printfnl("Invariant OK: %s", Semaphore.displayCounters());}
 	    // The invariant is true
     } // check
 

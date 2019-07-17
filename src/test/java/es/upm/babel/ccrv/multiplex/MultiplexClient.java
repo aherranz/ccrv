@@ -1,6 +1,6 @@
 package es.upm.babel.ccrv.multiplex;
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 
 import es.upm.babel.cclib.ConcIO;
 
@@ -13,7 +13,7 @@ import java.util.concurrent.ThreadLocalRandom;
  */
 
 public class MultiplexClient extends Thread{
-    private static SSemaphore semMultiplex;
+    private static Semaphore semMultiplex;
     // The semaphore that will be used by all the clients to control access
     // to the critical section
     private int id;
@@ -25,7 +25,7 @@ public class MultiplexClient extends Thread{
     // Every thread that uses the critical section (every client) receives
     // an ID and a reference to the semaphore it must use to enter the critical
     // section
-    public MultiplexClient(SSemaphore semMutex,int id) {
+    public MultiplexClient(Semaphore semMutex, int id) {
 	this.semMultiplex=semMutex;
 	this.id=id;
     } // constructor/2

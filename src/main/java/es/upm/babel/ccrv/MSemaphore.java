@@ -157,12 +157,12 @@ class MSemaphore {
         fInvariant=fInv;
     } // addInvariant
 
-    // The 4-th element of the stack is taken because when SSemaphore.await
+    // The 4-th element of the stack is taken because when Semaphore.await
     // (or signal) is called, the stack contains:
     // - getStackTrace (top of the stack)
     // - getLineNumber
     // - MSemaphore.await/signal
-    // - SSemaphore.await/signal
+    // - Semaphore.await/signal
     // - run method of the class being tested (this is the line we use to
     //   give a name to the counter, which is what this function is ued for:
     //   create counters named cNNm/NNp, where NN is the line number where the

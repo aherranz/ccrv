@@ -6,7 +6,7 @@ package es.upm.babel.ccrv.rw;
 
 // import java.util.concurrent.ThreadLocalRandom;
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.ccrv.Invariant;
 
 public class TestRW
@@ -24,16 +24,16 @@ public class TestRW
 	Invariant oInv=new InvariantForRW();
         // We create the invariant we want to enforce in this scenario
 
-        // SSemaphore.setInvariant(oInv);
-	// ... and pass the invariant to SSemaphore, so from now on, every call
-	// an SSemaphore (await/signal) checks whether the invariant holds.
+        // Semaphore.setInvariant(oInv);
+	// ... and pass the invariant to Semaphore, so from now on, every call
+	// an Semaphore (await/signal) checks whether the invariant holds.
 
 
-	SSemaphore.addInvariant((a) ->
+	Semaphore.addInvariant((a) ->
 	     {
-		 return ((SSemaphore.after("roomEmptyWaitW")-SSemaphore.after("roomEmptySignalW")==1 &&
-			  (SSemaphore.after("mutexSignalR")-SSemaphore.before("mutexWaitR2"))==0) ||
-		         (SSemaphore.after("roomEmptyWaitW")-SSemaphore.after("roomEmptySignalW"))==0);
+		 return ((Semaphore.after("roomEmptyWaitW")- Semaphore.after("roomEmptySignalW")==1 &&
+			  (Semaphore.after("mutexSignalR")- Semaphore.before("mutexWaitR2"))==0) ||
+		         (Semaphore.after("roomEmptyWaitW")- Semaphore.after("roomEmptySignalW"))==0);
 
 	     }
 	);

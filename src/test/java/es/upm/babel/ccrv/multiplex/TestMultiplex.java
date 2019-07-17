@@ -1,6 +1,6 @@
 package es.upm.babel.ccrv.multiplex;
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.ccrv.Invariant;
 
 public class TestMultiplex {
@@ -8,7 +8,7 @@ public class TestMultiplex {
     private static final int MULTIPLEX_CAPACITY=3;
     // How many clients will be admitted simultaneously inside the
     // critical section
-    private static SSemaphore semMultiplex=new SSemaphore(MULTIPLEX_CAPACITY);
+    private static Semaphore semMultiplex=new Semaphore(MULTIPLEX_CAPACITY);
     // The semaphore that will control access to the critical section and which
     // will be shared by all the clients.
 
@@ -18,17 +18,17 @@ public class TestMultiplex {
 	// All the clients that will use the multiplex
         Invariant oInv;
         // The invariant that will be chacked before and afeter every
-	// operation on an SSemaphore
+	// operation on an Semaphore
 
 	oInv=new InvariantForMutex(); // Create the invariant
-	// SSemaphore.setInvariant(oInv); //  and assign it so the system checks
+	// Semaphore.setInvariant(oInv); //  and assign it so the system checks
 	                               // it right after every operation on an
-	                               // SSemaphore
-	SSemaphore.addInvariant(
+	                               // Semaphore
+	Semaphore.addInvariant(
 	   (a) ->
 	      {return
-	       SSemaphore.after("mutexIn")-SSemaphore.after("mutexOut")==
-		      ((SSemaphore.before("mutexIn")-SSemaphore.after("mutexOut")<MULTIPLEX_CAPACITY)?(SSemaphore.before("mutexIn")-SSemaphore.after("mutexOut")):MULTIPLEX_CAPACITY);
+	       Semaphore.after("mutexIn")- Semaphore.after("mutexOut")==
+		      ((Semaphore.before("mutexIn")- Semaphore.after("mutexOut")<MULTIPLEX_CAPACITY)?(Semaphore.before("mutexIn")- Semaphore.after("mutexOut")):MULTIPLEX_CAPACITY);
 		      });
 	arrMutexClients=new MultiplexClient[100];
 	// A lot of excess capacity, in case we decide to enlarge the example.
@@ -869,5 +869,5 @@ public class TestMultiplex {
 //     21:				[12] -> >>>>> Illegal system state: cIn-=4, cIn+=1, cOut=0
 // 	at Multiplex.InvariantForMutex.check(InvariantForMutex.java:41)
 // 	at es.upm.babel.cclib.MSemaphore.await(MSemaphore.java:241)
-// 	at es.upm.babel.cclib.SSemaphore.await(SSemaphore.java:79)
+// 	at es.upm.babel.cclib.Semaphore.await(Semaphore.java:79)
 // 	at Multiplex.MultiplexClient.run(MultiplexClient.java:40)

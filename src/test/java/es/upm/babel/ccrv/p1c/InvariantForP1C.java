@@ -1,7 +1,7 @@
 package es.upm.babel.ccrv.p1c;
 
 import es.upm.babel.ccrv.Invariant;
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.cclib.ConcIO;
 
 import java.util.Hashtable;
@@ -21,20 +21,20 @@ public class InvariantForP1C implements Invariant {
         int c32,c41,c61,c70;
 	boolean bCondition;
 
-	c32=SSemaphore.after("32");
-	c41=SSemaphore.after("41");
-	c61=SSemaphore.after("61");
-	c70=SSemaphore.after("70");
+	c32= Semaphore.after("32");
+	c41= Semaphore.after("41");
+	c61= Semaphore.after("61");
+	c70= Semaphore.after("70");
 	bCondition=((c32-c41)+(c61-c70)<2);
 
         if (counters==null) {throw new IllegalArgumentException("No counters have been defined");}
 
 
 	if (!(bCondition)) // Condition to evaluate
-	    {sError=">>>>> Illegal system state: "+SSemaphore.displayCounters();
+	    {sError=">>>>> Illegal system state: "+ Semaphore.displayCounters();
 	ConcIO.printfnl(sError);
 	throw new IllegalArgumentException(sError);}
-	else {ConcIO.printfnl("Invariant OK: %s",SSemaphore.displayCounters());}
+	else {ConcIO.printfnl("Invariant OK: %s", Semaphore.displayCounters());}
     } // check
 
     public void setCounters(Hashtable ht) {this.counters=ht;}

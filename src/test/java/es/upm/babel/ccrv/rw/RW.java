@@ -6,27 +6,27 @@ package es.upm.babel.ccrv.rw;
  * the semaphores required (mutex, items, spaces).
  */
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.cclib.ConcIO;
 
 public class RW
 {
     private static int sharedResource;
     private static int readers; // Number of readers in critical section
-    private static SSemaphore semMutex;
+    private static Semaphore semMutex;
     // The semaphore that protects the shared resources
-    private static SSemaphore semRoomEmpty;
+    private static Semaphore semRoomEmpty;
     // Semaphore that the writers use as a mutex
 
 
     static { // Everything is initialized
-        semMutex=new SSemaphore(1); // semMutex --> semaphore number 1
-	semRoomEmpty=new SSemaphore(1); // roomEmpty --> number 2
+        semMutex=new Semaphore(1); // semMutex --> semaphore number 1
+	semRoomEmpty=new Semaphore(1); // roomEmpty --> number 2
 	// The two SSemaphores above have not been given a name by the
         // programmer but the invariant will be later able to refer to them
 	// since the name they are given is not random but sequential:
-	// - The first SSemaphore created will be called "1"
-	// - The second SSemaphore to be created (semRoomEmpty) will be
+	// - The first Semaphore created will be called "1"
+	// - The second Semaphore to be created (semRoomEmpty) will be
 	//   called "2".
 	sharedResource=0;
 	// The shared space on which readers and writers operate

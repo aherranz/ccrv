@@ -1,6 +1,6 @@
 package es.upm.babel.ccrv.p1c;
 
-import es.upm.babel.ccrv.SSemaphore;
+import es.upm.babel.ccrv.Semaphore;
 import es.upm.babel.ccrv.Invariant;
 
 public class TestP1C
@@ -16,11 +16,11 @@ public class TestP1C
 	Invariant oInv=new InvariantForP1C();
         // We create the invariant we want to enforce in this scenario
 
-        SSemaphore.setInvariant(oInv);
-	// ... and pass the invariant to SSemaphore, so from now on, every call
-	// an SSemaphore (await/signal) checks whether the invariant holds.
+        Semaphore.setInvariant(oInv);
+	// ... and pass the invariant to Semaphore, so from now on, every call
+	// an Semaphore (await/signal) checks whether the invariant holds.
 
-        SSemaphore.addInvariant((a) -> {return ((SSemaphore.after("32")-SSemaphore.after("41")) + (SSemaphore.after("61")-SSemaphore.after("70")))<2;});
+        Semaphore.addInvariant((a) -> {return ((Semaphore.after("32")- Semaphore.after("41")) + (Semaphore.after("61")- Semaphore.after("70")))<2;});
 
 	c.start(); // Start the consumer
 	p.start(); // Start the producer
