@@ -12,7 +12,6 @@ import java.util.Hashtable;
 
 public class InvariantForMutex implements Invariant {
   private Hashtable counters;
-  private Hashtable msems;
   // The counters and the semaphores on which the Invariant will operate
 
   private static final int n = 3;
@@ -21,7 +20,6 @@ public class InvariantForMutex implements Invariant {
     int cInMinus,cInPlus,cOut;
     int nLeftSide; // c40+ - c43+
     int nRightSide; // min (c40- - c43+,n)
-    int nLineNumber;
     String sError;
 
     // Remember that at most one semaphore operation can be running at any

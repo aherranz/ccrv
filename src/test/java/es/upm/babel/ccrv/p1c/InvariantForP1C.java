@@ -8,7 +8,6 @@ import java.util.Hashtable;
 
 public class InvariantForP1C implements Invariant {
   private Hashtable counters;
-  private Hashtable msems;
   // The counters and the semaphores on which the Invariant will operate
 
   // Invariant: (c32-c41) + (c61-c70) < 2

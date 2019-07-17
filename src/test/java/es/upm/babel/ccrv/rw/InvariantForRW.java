@@ -14,7 +14,6 @@ import java.util.Hashtable;
 
 public class InvariantForRW implements Invariant {
   private Hashtable counters;
-  private Hashtable msems;
   // The counters and the semaphores on which the Invariant will operate
 
   // Remember that at most one semaphore operation can be running at any
@@ -25,7 +24,6 @@ public class InvariantForRW implements Invariant {
     boolean bConjunct11; // roomEmptyWaitW-roomEmptySignalW==1
     boolean bConjunct12; // mutexSignalR-mutexWaitR2-==0
     boolean bDisjunct2; // rommEmptyWaitW-roomEmptySignalW==0
-    int nLineNumber;
     String sError;
 
     if (counters==null) {throw new IllegalArgumentException("No counters have been defined");}

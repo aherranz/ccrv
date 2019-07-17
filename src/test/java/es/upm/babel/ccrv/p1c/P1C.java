@@ -10,11 +10,9 @@ public class P1C
 {
   private static final int BUFFER_CAPACITY=3;
   private static Integer buffer;
-  private static Semaphore semMutex;
   private static Semaphore sem, semCounterCons,semCounterProd;
 
   static { // Everything is initialized
-    semMutex=new Semaphore(1);
     sem=new Semaphore(1,"sem");
     semCounterProd=new Semaphore(0,"semCounterProd"); semCounterCons=new Semaphore(0,"semCounterCons");
     buffer=null;
