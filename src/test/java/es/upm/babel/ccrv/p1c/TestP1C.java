@@ -5,7 +5,7 @@ import es.upm.babel.ccrv.Invariant;
 
 public class TestP1C
 {
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     P1C pc=new P1C();
     P1C.Consumer c=pc.new Consumer();
     P1C.Consumer c2=pc.new Consumer();
@@ -13,14 +13,12 @@ public class TestP1C
     P1C.Producer p=pc.new Producer();
     P1C.Producer p2=pc.new Producer();
     // ... and a producer
-    Invariant oInv=new InvariantForP1C();
-    // We create the invariant we want to enforce in this scenario
 
-    Semaphore.setInvariant(oInv);
-    // ... and pass the invariant to Semaphore, so from now on, every call
-    // an Semaphore (await/signal) checks whether the invariant holds.
-
-    Semaphore.addInvariant((a) -> {return ((Semaphore.after("32")- Semaphore.after("41")) + (Semaphore.after("61")- Semaphore.after("70")))<2;});
+    Semaphore.addInvariant(() -> {
+      return ((Semaphore.after("32") - Semaphore.after("41"))
+              + (Semaphore.after("61") - Semaphore.after("70")))
+              < 2;
+    });
 
     c.start(); // Start the consumer
     p.start(); // Start the producer

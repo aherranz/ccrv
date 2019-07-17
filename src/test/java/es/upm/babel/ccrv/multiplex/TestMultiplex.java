@@ -14,22 +14,16 @@ public class TestMultiplex {
 
   public static void main(String[] args) {
     int i;
-    MultiplexClient arrMutexClients[];
+    MultiplexClient[] arrMutexClients;
     // All the clients that will use the multiplex
-    Invariant oInv;
-    // The invariant that will be chacked before and afeter every
-    // operation on an Semaphore
 
-    oInv=new InvariantForMutex(); // Create the invariant
-    // Semaphore.setInvariant(oInv); //  and assign it so the system checks
-    // it right after every operation on an
-    // Semaphore
-    Semaphore.addInvariant(
-                           (a) ->
-                           {return
-                               Semaphore.after("mutexIn")- Semaphore.after("mutexOut")==
-                               ((Semaphore.before("mutexIn")- Semaphore.after("mutexOut")<MULTIPLEX_CAPACITY)?(Semaphore.before("mutexIn")- Semaphore.after("mutexOut")):MULTIPLEX_CAPACITY);
-                           });
+    Semaphore.addInvariant(() -> {
+      return
+        Semaphore.after("mutexIn") - Semaphore.after("mutexOut")
+        ==
+        Math.min(Semaphore.before("mutexIn") - Semaphore.after("mutexOut"),
+                 MULTIPLEX_CAPACITY);
+      });
     arrMutexClients=new MultiplexClient[100];
     // A lot of excess capacity, in case we decide to enlarge the example.
 

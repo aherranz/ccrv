@@ -11,7 +11,7 @@ import es.upm.babel.ccrv.Invariant;
 
 public class TestRW
 {
-  public static void main(String args[]) {
+  public static void main(String[] args) {
     RW rw=new RW();
     // First, we create an instance of the outer class (the one that
     // contains the reader and the writer)
@@ -21,22 +21,17 @@ public class TestRW
     RW.Writer w=rw.new Writer();
     RW.Writer w2=rw.new Writer();
     // ... and the writers ...
-    Invariant oInv=new InvariantForRW();
-    // We create the invariant we want to enforce in this scenario
 
-    // Semaphore.setInvariant(oInv);
     // ... and pass the invariant to Semaphore, so from now on, every call
     // an Semaphore (await/signal) checks whether the invariant holds.
-
-
-    Semaphore.addInvariant((a) ->
-                           {
-                             return ((Semaphore.after("roomEmptyWaitW")- Semaphore.after("roomEmptySignalW")==1 &&
-                                      (Semaphore.after("mutexSignalR")- Semaphore.before("mutexWaitR2"))==0) ||
-                                     (Semaphore.after("roomEmptyWaitW")- Semaphore.after("roomEmptySignalW"))==0);
-
-                           }
-                           );
+    Semaphore.addInvariant(() -> {
+        return
+          (Semaphore.after("roomEmptyWaitW") - Semaphore.after("roomEmptySignalW") == 1
+           &&
+           (Semaphore.after("mutexSignalR")- Semaphore.before("mutexWaitR2"))==0)
+          ||
+          Semaphore.after("roomEmptyWaitW") - Semaphore.after("roomEmptySignalW") == 0;
+      });
 
     r.start(); // Start the reader
     w.start(); // Start the writer

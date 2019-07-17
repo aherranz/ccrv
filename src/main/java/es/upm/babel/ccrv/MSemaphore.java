@@ -79,16 +79,11 @@ class MSemaphore {
   // MSemaphores are handled inside a monitor, but it seems a good practice...
   private static boolean bLocked;
   // Indicates whether lockSem is closed or not.
-  private static Invariant oInvariant;
-  // The invariant that will be checked right after every operation on a
-  // MSemaphore. If this attribute is null hwn one such operation finishes,
-  // no check is performed.
 
-  private static Function<Void,Boolean> fInvariant;
-  // A function that takes no argument and returns a Boolean. If it is
-  // defined, rhe semaphore primitives (await, signal) will call it
-  // instead of calling oInvariant.check(). If this function is called
-  // and it returns false, the semaphore primitive will throw an exception
+  /**
+   * Invariant to be checked at runtime.
+   */
+  private static Invariant oInvariant;
 
   static{
     // Initializing the system of MSemaphores:
@@ -108,35 +103,21 @@ class MSemaphore {
     return "c"+sCounterName+""+(nPrePost==MSemaphore.PRE?"-":"+");
   } // getCounterName
 
-    // Check the invariant defined: If the invariant has been defined as a
-    // boolean function, it is evaluated first. A exception is thrown if this
-    // evaluation returns false.
-    // If no boolean function is defined as invariant, then the object
-    // oInvariant (which must implement Invariant is tried by
-    // calling the method of such an object.
-  private static void check() throws IllegalArgumentException
+  /**
+   * Checks all added invariants.
+   *
+   * @return true if the invariant holds or no invariant was added, false otherwise
+   */
+  private static boolean check()
   {
-    Boolean bResultFInvariant;
-    String sError;
+    return oInvariant == null || oInvariant.check();
+  }
 
-    if (fInvariant!=null) { // Boolean function defined
-      bResultFInvariant=fInvariant.apply(null);
-      if (!bResultFInvariant) {
-        sError="Illegal system state "+MSemaphore.displayCounters();
-        throw new IllegalArgumentException(sError);
-      } // if !bResultFInvariant
-    } else { // fInvariant is null
-      if (oInvariant!=null) {
-        oInvariant.check();
-      } // if oInvariant!=null
-    } // else: fInvariant==null
-  } // check
-
-    // Adding a new semaphore to the table of known semaphores. The following
-    // values are needed:
-    // - A name for the new semaphore (String)
-    // - The starting value for the semaphore
-    // - Whether 'name' is an String cread by the machine or by the programmer
+  // Adding a new semaphore to the table of known semaphores. The following
+  // values are needed:
+  // - A name for the new semaphore (String)
+  // - The starting value for the semaphore
+  // - Whether 'name' is an String cread by the machine or by the programmer
   public void addMSemaphore(String name, int nInitialValue, boolean bMachineNamed) {
     MSem msem=new MSem(MSemaphore.monitor,nInitialValue,bMachineNamed);
 
@@ -145,17 +126,14 @@ class MSemaphore {
     // name already exists.
   } // addMSemaphore
 
-    // Sets the invariant that will be checked right after any operation on any
-    // known MSemaphore
-  public static void setInvariant(Invariant inv) {
-    oInvariant=inv;
-  } // setInvariant
 
-    // Sets the boolean function that will be checked right after
-    // any operation on any known MSemaphore
-  public static void addInvariant(Function<Void,Boolean> fInv) {
-    fInvariant=fInv;
-  } // addInvariant
+  /**
+   * Adds a new invariant to be checked.
+   * @param inv the invariant to be added.
+   */
+  public static void addInvariant(Invariant inv) {
+    oInvariant = inv;
+  }
 
     // The 4-th element of the stack is taken because when Semaphore.await
     // (or signal) is called, the stack contains:
@@ -204,12 +182,6 @@ class MSemaphore {
       // is assigned to it
       else // The counter already exists
         {htCounters.put(sCounterNameAux,iAuxValue.intValue()+1);}
-      if (oInvariant!=null) {
-        // If an invariant has been defined, set the counters and the
-        // semaphores on which it can operate
-        oInvariant.setCounters(htCounters);
-        oInvariant.setSemaphores(htMSems);
-      } // oInvariant!=null
     } catch (Exception ex) {
       throw ex;
     } finally {
@@ -288,8 +260,9 @@ class MSemaphore {
         // counters are incremented atomically
         else // The semaphore does not have any credit
           {
-            MSemaphore.check();
-            // Check the invariant, if it is defined
+            if (!MSemaphore.check()) {
+              throw new IllegalStateException("Invariant violation");
+            }
             msemAux.getQueue().await();
             // Send the thread to sleep. This makes the thread
             // leave the monitor (no need for leave and enter)
@@ -306,8 +279,9 @@ class MSemaphore {
         // the table of counters.
         incCounter(name,counterName,"Await",nLineNumber,POST);
         // Increment the counter after the await
-        MSemaphore.check();
-        // And check the invariant, if one is defined.
+        if (!MSemaphore.check()) {
+          throw new IllegalStateException("Invariant violation");
+        }
       } // if msemAux!=null
     } catch (Exception e) {
       throw e;
@@ -359,7 +333,9 @@ class MSemaphore {
             // Regain ownership of the monitor
           }
         // incCounter(nLineNumber,POST);
-        MSemaphore.check();
+        if (!MSemaphore.check()) {
+          throw new IllegalStateException("Invariant violation");
+        }
         // Check the invariant, if one is defined.
       } // if msemAux!=null
     } catch (Exception e) {

@@ -26,7 +26,7 @@ public class MultiplexClient extends Thread{
   // an ID and a reference to the semaphore it must use to enter the critical
   // section
   public MultiplexClient(Semaphore semMutex, int id) {
-    this.semMultiplex=semMutex;
+    semMultiplex=semMutex;
     this.id=id;
   } // constructor/2
 
@@ -37,10 +37,10 @@ public class MultiplexClient extends Thread{
     for(i=0;i<10;i++) {
       try {
         ConcIO.printfnl("Iteration %d of thread %d starts",i,this.id);
-        this.semMultiplex.await("mutexIn"); // Into the critical section...
+        semMultiplex.await("mutexIn"); // Into the critical section...
         ConcIO.printfnl("After await in iteration %d of thread %d\n",i,this.id);
         Thread.sleep(randomNumber(0,1001)); // Critical Section
-        this.semMultiplex.signal("mutexOut"); // And out from the critical section
+        semMultiplex.signal("mutexOut"); // And out from the critical section
         ConcIO.printfnl("After signal in iteration %d of thread %d\n",i,this.id);
         Thread.sleep(randomNumber(0,1001));
       } catch (Exception e) {
