@@ -5,10 +5,10 @@ import es.upm.babel.cclib.Monitor.Cond;
 
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Implementation of semaphores where every method invocation in every
@@ -56,7 +56,7 @@ public class Semaphore {
   /**
    * Global set of added invariants.
    */
-  private static Set<Invariant> invariants = new TreeSet<>();
+  private static List<Invariant> invariants = new ArrayList<>();
 
   /**
    * The internal counter of the semaphore.
@@ -202,21 +202,21 @@ public class Semaphore {
    * Checks added invariants. Stops the program if an invariant fails.
    */
   private static void checkInvariants() {
-    for(Invariant i : invariants) {
-      if (!i.check()) {
-        StackTraceElement ste = Thread.currentThread().getStackTrace()[2];
-        String filename = ste.getFileName();
-        int line = ste.getLineNumber();
-        System.err.println(String.format("Invariant failed at line %d in file '%s'",
-                line,
-                filename));
+    for(Invariant inv : invariants) {
+      if (!inv.check()) {
+        final int depth = 3;
+        StackTraceElement[] st = Thread.currentThread().getStackTrace();
+        System.err.println("CCRV detected an invariant violation");
+        for (int i = depth; i < st.length; i++) {
+          System.err.println(String.format("  at %s", st[i]));
+        }
         System.exit(1);
       }
     }
   }
 
   /**
-   * Class to represent a pair of before-after ghost counters.
+   * POJO to represent a pair of before-after ghost counters.
    */
   private static class GhostPair {
     private int before;
@@ -264,38 +264,30 @@ public class Semaphore {
   }
 
   /**
-   * Returns the before ghost counter referenced by programPoint.
+   * Returns the before ghost counter referenced by
+   * programPoint. Returns 0 if the programPoint is not yet
+   * registered.
    */
   public static int before(String programPoint) {
     GhostPair ghostPair = ghostCounters.get(programPoint);
-    if (ghostPair != null)
-      return ghostPair.before();
-    else
-      throw new IllegalArgumentException(String.format("No ghost before counter for program point '%s'",
-                                                       programPoint));
+    return ghostPair != null ? ghostPair.before() : 0;
   }
 
   /**
    * Returns the after ghost counter referenced by programPoint.
+   * Returns 0 if the programPoint is not yet registered.
    */
   public static int after(String programPoint) {
     GhostPair ghostPair = ghostCounters.get(programPoint);
-    if (ghostPair != null)
-      return ghostPair.after();
-    else
-      throw new IllegalArgumentException(String.format("No ghost after counter for program point '%s'",
-                                                       programPoint));
+    return ghostPair != null ? ghostPair.after() : 0;
   }
 
   /**
-   * Returns the value of the named semaphore with name name.
+   * Returns the value of the named semaphore with name name. Returns
+   * 0 if name is not yet registered.
    */
   public static int semaphore(String name) {
     Semaphore s = namedSemaphores.get(name);
-    if (s != null)
-      return s.value;
-    else
-      throw new IllegalArgumentException(String.format("No semaphore with name '%s'",
-                                                       name));
+    return s != null ? s.value : 0;
   }
 }
