@@ -1,14 +1,19 @@
 package es.upm.babel.ccrv;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import es.upm.babel.cclib.Monitor;
 import es.upm.babel.cclib.Monitor.Cond;
 
 import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * Implementation of semaphores where every method invocation in every
@@ -130,15 +135,7 @@ public class Semaphore {
    * invalidate its semantics.
    */
   public void await() {
-    // IMPORTANT: do not refactor this code since checkInvariants
-    // depends on inspecting the stacktrace
-    mutex.enter();
-    value--;
-    checkInvariants();
-    if (value < 0)
-      queue.await();
-    checkInvariants();
-    mutex.leave();
+    P(null);
   }
 
   /**
@@ -146,31 +143,14 @@ public class Semaphore {
    * before-after counters referenced with programPoint.
    */
   public void await(String programPoint) {
-    mutex.enter();
-    incBefore(programPoint);
-    value--;
-    checkInvariants();
-    if (value < 0)
-      queue.await();
-    incAfter(programPoint);
-    checkInvariants();
-    mutex.leave();
+    P(programPoint);
   }
 
   /**
    * The Dijkstra V operation: increments the internal counter.
    */
   public void signal() {
-    // IMPORTANT: do not refactor this code since checkInvariants
-    // depends on inspecting the stacktrace
-    mutex.enter();
-    checkInvariants();
-    if (value == 0 && queue.waiting() > 0)
-      queue.signal();
-    else
-      value++;
-    checkInvariants();
-    mutex.leave();
+    V(null);
   }
 
   /**
@@ -178,15 +158,39 @@ public class Semaphore {
    * before-after counters referenced with programPoint.
    */
   public void signal(String programPoint) {
+    V(programPoint);
+  }
+
+  /**
+   * Dijkstra's P operation acting on the ghost before-after counters
+   * referenced with programPoint if programPoint is not null.
+   */
+  private void P(String programPoint) {
     mutex.enter();
     incBefore(programPoint);
-    checkInvariants();
-    if (value == 0 && queue.waiting() > 0)
-      queue.signal();
-    else
-      value++;
+    value--;
+    if (value < 0) {
+      checkInvariants();
+      queue.await();
+    }
     incAfter(programPoint);
     checkInvariants();
+    mutex.leave();
+  }
+
+  /**
+   * Dijkstra's V operation acting on the ghost before-after counters
+   * referenced with programPoint if programPoint is not null.
+   */
+  public void V(String programPoint) {
+    mutex.enter();
+    incBefore(programPoint);
+    incAfter(programPoint);
+    value++;
+    if (value <= 0 && queue.waiting() > 0)
+      queue.signal();
+    else
+      checkInvariants();
     mutex.leave();
   }
 
@@ -210,6 +214,15 @@ public class Semaphore {
         for (int i = depth; i < st.length; i++) {
           System.err.println(String.format("  at %s", st[i]));
         }
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+          String semaphoresJson = mapper.writeValueAsString(namedSemaphores);
+          String ghostJson = mapper.writeValueAsString(ghostCounters);
+          System.err.println("CCRV semaphores and ghost counters");
+          System.err.println(String.format("{ \"semaphores\" : %s, \"counters\" : %s}", semaphoresJson, ghostJson));
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
         System.exit(1);
       }
     }
@@ -218,6 +231,7 @@ public class Semaphore {
   /**
    * POJO to represent a pair of before-after ghost counters.
    */
+  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   private static class GhostPair {
     private int before;
     private int after;
