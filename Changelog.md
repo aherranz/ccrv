@@ -11,6 +11,8 @@
 
 ## Next release
 
+- [T] Strong refactor in order to encapsulate all the functionality in
+  one well documented class: Semaphore (MSempaphore nuked).
 - [T] IntelliJ IDEA project reimported as gradle external model (instead of as existing sources).
 - [T] package-info.java included.
 
