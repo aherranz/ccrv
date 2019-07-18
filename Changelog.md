@@ -11,6 +11,7 @@
 
 ## Next release
 
+- [T] IntelliJ IDEA project reimported as gradle external model (instead of as existing sources).
 - [T] package-info.java included.
 
 ## 0.0.1
