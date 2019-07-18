@@ -46,22 +46,22 @@ public class Semaphore {
   /**
    * Global monitor that serializes every operation on semaphores.
    */
-  private static Monitor mutex = new Monitor();
+  private static final Monitor mutex = new Monitor();
 
   /**
    * Global map with named semaphores.
    */
-  private static Map<String, Semaphore> namedSemaphores = new HashMap<>();
+  private static final Map<String, Semaphore> namedSemaphores = new HashMap<>();
 
   /**
    * Global map with ghost before-after counters.
    */
-  private static Map<String, GhostPair> ghostCounters = new HashMap<>();
+  private static final Map<String, GhostPair> ghostCounters = new HashMap<>();
 
   /**
    * Global set of added invariants.
    */
-  private static List<Invariant> invariants = new ArrayList<>();
+  private static final List<Invariant> invariants = new ArrayList<>();
 
   /**
    * The internal counter of the semaphore.
