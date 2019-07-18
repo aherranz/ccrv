@@ -11,6 +11,8 @@
 
 ## Next release
 
+- [T] package-info.java included.
+
 ## 0.0.1
 
 - [+] Initial release
