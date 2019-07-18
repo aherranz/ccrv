@@ -208,7 +208,7 @@ public class Semaphore {
   private static void checkInvariants() {
     for(Invariant inv : invariants) {
       if (!inv.check()) {
-        final int depth = 3;
+        final int depth = 4;
         StackTraceElement[] st = Thread.currentThread().getStackTrace();
         System.err.println("CCRV detected an invariant violation");
         for (int i = depth; i < st.length; i++) {
