@@ -7,7 +7,7 @@ import static es.upm.babel.ccrv.Semaphore.after;
 public class TestP1C
 {
   public static void main(String[] args) {
-    final int N_THREADS = 2;
+    final int N_THREADS = 10;
     P1C.Consumer[] c = new P1C.Consumer[N_THREADS];
     P1C.Producer[] p = new P1C.Producer[N_THREADS];
     for (int i = 0; i < N_THREADS; i++) {
