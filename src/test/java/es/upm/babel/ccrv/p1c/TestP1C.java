@@ -16,8 +16,8 @@ public class TestP1C
     }
 
     Semaphore.addInvariant(() ->
-                           after("consumer locks") - after("consumer_unlocks")
-                           + after("produce locks") - after("consumer unlocks")
+                           after("consumer locks") - after("consumer unlocks")
+                           + after("producer locks") - after("producer unlocks")
                            < 2);
 
     Semaphore.addInvariant(() -> semaphore("storage") - semaphore("retrievals") <= 1);
