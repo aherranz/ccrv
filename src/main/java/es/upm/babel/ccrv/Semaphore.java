@@ -1,12 +1,12 @@
 package es.upm.babel.ccrv;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import es.upm.babel.cclib.Monitor;
 import es.upm.babel.cclib.Monitor.Cond;
 
-import javax.annotation.Nullable;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,16 +68,14 @@ public class Semaphore {
    */
   private int value;
 
-  /**
-   * The name of the semaphore (null if no name is given).
-   */
-  @Nullable
-  private String name;
+  @JsonValue
+  private int value() {
+    return value;
+  }
 
   /**
    * Condition to implement calling process block in await when value < 1
    */
-  @Nonnull
   private Cond queue;
 
   /**
@@ -87,7 +85,6 @@ public class Semaphore {
     if (n < 0)
       throw new IllegalArgumentException("Semaphore cannot be initialized with a negative value");
 
-    this.name = name;
     this.value = n;
     this.queue = mutex.newCond();
 
@@ -231,7 +228,6 @@ public class Semaphore {
   /**
    * POJO to represent a pair of before-after ghost counters.
    */
-  @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY)
   private static class GhostPair {
     private int before;
     private int after;
@@ -245,9 +241,11 @@ public class Semaphore {
     public void incAfter() {
       after++;
     }
+    @JsonGetter
     public int before() {
       return before;
     }
+    @JsonGetter
     public int after() {
       return after;
     }
