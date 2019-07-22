@@ -365,9 +365,9 @@ class MSemaphore {
     nNumCounters=sKeys.size();
     i=0;
     for (String sCounter : lKeys) {
-      sOutput+=sCounter;
+      sOutput+="\""+sCounter+"\"";
       sOutput+=" : ";
-      sOutput+=MSemaphore.htCounters.get(sCounter);
+      sOutput+="\""+MSemaphore.htCounters.get(sCounter)+"\"";
       i++;
       if (i<nNumCounters) {sOutput+=", ";}
     } // foreach
@@ -382,7 +382,7 @@ class MSemaphore {
     for (String sSemaphoreName : sKeys) {
       if (!htMSems.get(sSemaphoreName).bMachineNamed) {
         if (nCountNamedSemaphores>0) {sOutput+=", ";}
-        sOutput+=sSemaphoreName+" : "+htMSems.get(sSemaphoreName).getValue();
+        sOutput+="\""+sSemaphoreName+"\""+" : "+"\""+htMSems.get(sSemaphoreName).getValue()+"\"";
         nCountNamedSemaphores++;
       } // if semaphore not named by machine
     } // for
