@@ -11,6 +11,14 @@
 
 ## Next release
 
+## 0.0.2
+
+- [+] Printing the value of semaphores and ghost counters as JSON when the invariant fails.
+- [T] Strong refactor in order to encapsulate all the functionality in
+  one well documented class: Semaphore (MSemaphore nuked).
+- [T] IntelliJ IDEA project reimported as gradle external model (instead of as existing sources).
+- [T] package-info.java included.
+
 ## 0.0.1
 
 - [+] Initial release
