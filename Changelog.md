@@ -11,6 +11,8 @@
 
 ## Next release
 
+## 0.0.2
+
 - [+] Printing the value of semaphores and ghost counters as JSON when the invariant fails.
 - [T] Strong refactor in order to encapsulate all the functionality in
   one well documented class: Semaphore (MSemaphore nuked).
