@@ -31,7 +31,7 @@ dependencies {
     implementation 'com.google.guava:guava:27.0.1-jre'
 
     // cclib (from local jar in libs/)
-    compile name: 'cclib-0.4.8'
+    compile name: 'cclib-0.4.9'
 
     // // cclib (from github, see settings.gradle)
     // implementation 'es.upm.babel:cclib:0.4.8'
