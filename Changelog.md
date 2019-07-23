@@ -11,6 +11,8 @@
 
 ## Next release
 
+- [F] Find the problem in busy waiting implementation for P1C: program does not finish.
+
 ## 0.0.2
 
 - [+] Printing the value of semaphores and ghost counters as JSON when the invariant fails.
